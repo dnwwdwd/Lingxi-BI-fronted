@@ -200,6 +200,25 @@ export async function listMyChartByPageUsingPOST(
   });
 }
 
+/**
+ * 按关键词搜索我的图表（MySQL 实现）
+ * @param body
+ * @param options
+ */
+export async function searchMyChart(
+  body: API.ChartQueryRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponsePageChart_>('/api/chart/my/search/page', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** listMyChartByPageEs POST /api/chart/my/list/page */
 export async function listMyChartByPageEsUsingPOST(
   body: API.ChartQueryRequest,

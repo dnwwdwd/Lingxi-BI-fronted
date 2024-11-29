@@ -1,7 +1,7 @@
 import {
   listChartByPageUsingPOST,
   listMyChartByPageUsingPOST,
-  regenChartUsingPOST,
+  regenChartUsingPOST, searchMyChart,
 } from '@/services/yubi/chartController';
 import {useModel} from '@@/exports';
 import {Avatar, Button, Card, Form, Input, List, message, Modal, Result, Select} from 'antd';
@@ -61,7 +61,7 @@ const MyChartPage: React.FC = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const res = await listChartByPageUsingPOST(searchParams);
+      const res = await searchMyChart(searchParams);
       if (res.data) {
         setChartList(res.data.records ?? []);
         setTotal(res.data.total ?? 0);
