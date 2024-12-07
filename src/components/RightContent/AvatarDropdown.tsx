@@ -127,7 +127,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
           ...s,
           currentUser: {
             ...s.currentUser,
-            isSignIn: true
+            signIn: true
           }
         };
       });
@@ -154,7 +154,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
 
         {currentUser && (
           <>
-            {currentUser.isSignIn ? (
+            {currentUser.signIn ? (
               <Button onClick={() => signIn()}>
                 已签到
               </Button>
