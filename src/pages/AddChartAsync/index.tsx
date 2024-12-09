@@ -1,4 +1,4 @@
-import {genChartByAiAsyncUsingPOST} from '@/services/yubi/chartController';
+import {genChartByAiAsyncUsingPOST} from '@/services/lingxibi/chartController';
 import {UploadOutlined} from '@ant-design/icons';
 import {Button, Card, Form, Input, message, Select, Space, Upload} from 'antd';
 import {useForm} from 'antd/es/form/Form';

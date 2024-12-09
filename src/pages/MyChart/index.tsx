@@ -2,13 +2,13 @@ import {
   listMyChartByPageUsingPOST,
   regenChartUsingPOST,
   searchMyChart,
-} from '@/services/yubi/chartController';
+} from '@/services/lingxibi/chartController';
 import { useModel } from '@@/exports';
 import { Avatar, Button, Card, Form, Input, List, message, Modal, Result, Select } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import Search from 'antd/es/input/Search';
 import ReactECharts from 'echarts-for-react';
 import React, { useEffect, useState } from 'react';
+import Search from "antd/es/input/Search";
 
 const MyChartPage: React.FC = () => {
   const [form] = useForm();
@@ -61,7 +61,7 @@ const MyChartPage: React.FC = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const res = await searchMyChart(searchParams);
+      const res = await listMyChartByPageUsingPOST(searchParams);
       if (res.data) {
         setChartList(res.data.records ?? []);
         setTotal(res.data.total ?? 0);
@@ -226,12 +226,6 @@ const MyChartPage: React.FC = () => {
                 description={item.chartType ? '图表类型：' + item.chartType : undefined}
               />
 
-                <div style={{ marginLeft: 430 }}>
-                  <Button type="primary" onClick={() => handleOpenModal(item)}>
-                    修改诉求
-                  </Button>
-                </div>
-
               <>
                 {item.status === 'wait' && (
                   <>
@@ -250,7 +244,10 @@ const MyChartPage: React.FC = () => {
                 {item.status === 'succeed' && (
                   <>
                     <div style={{ marginBottom: 16 }} />
-                    <p>{'分析目标：' + item.goal}</p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <p style={{ margin: 0 }}>{'分析目标：' + item.goal}</p>
+                      <Button type="primary" onClick={() => handleOpenModal(item)}>修改诉求</Button>
+                    </div>
                     <div style={{ marginBottom: 16 }} />
                     <ReactECharts option={item.genChart && JSON.parse(item.genChart)} />
                   </>

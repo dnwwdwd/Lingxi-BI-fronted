@@ -3,7 +3,7 @@ import {message, Tabs} from 'antd';
 import React, {useState} from 'react';
 import Footer from '@/components/Footer';
 import {history} from '@umijs/max';
-import {userRegisterUsingPOST} from '@/services/yubi/userController';
+import {userRegisterUsingPOST} from '@/services/lingxibi/userController';
 import {LoginForm, ProFormText} from '@ant-design/pro-form';
 import {Helmet, Link} from "@@/exports";
 import Settings from "../../../../config/defaultSettings";

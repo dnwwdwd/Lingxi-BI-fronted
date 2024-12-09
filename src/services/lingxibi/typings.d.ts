@@ -69,6 +69,12 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponsePageTeamVO = {
+    code?: number;
+    data?: PageTeamVO_;
+    message?: string;
+  }
+
   type BaseResponsePagePostVO_ = {
     code?: number;
     data?: PagePostVO_;
@@ -200,6 +206,43 @@ declare namespace API {
     id?: number;
   };
 
+  type TeamQueryRequest = {
+    searchParam?: string;
+    description?: string;
+    current?: number;
+    id?: number;
+    name?: string;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
+    userId?: number;
+  };
+
+  type Team = {
+    id?: number;
+    name?: string;
+    description?: string;
+    imgUrl?: string;
+    maxNum?: number;
+    userId?: number;
+    createTime?: Date;
+    updateTime?: Date;
+    isDelete?: number;
+  }
+
+  type TeamVO = {
+    id?: number;
+    name?: string;
+    description?: string;
+    imgUrl?: string;
+    maxNum?: number;
+    userId?: number;
+    createTime?: Date;
+    updateTime?: Date;
+    isDelete?: number;
+    userVO?: LoginUserVO;
+  }
+
   type getPostVOByIdUsingGETParams = {
     /** id */
     id?: number;
@@ -242,6 +285,19 @@ declare namespace API {
     size?: number;
     total?: number;
   };
+
+  type PageTeamVO_ = {
+    countId?: string;
+    current?: number;
+    maxLimit?: number;
+    optimizeCountSql?: boolean;
+    orders?: OrderItem[];
+    pages?: number;
+    records?: TeamVO[];
+    searchCount?: boolean;
+    size?: number;
+    total?: number;
+  }
 
   type PagePostVO_ = {
     countId?: string;

@@ -7,7 +7,7 @@ import type {MenuInfo} from 'rc-menu/lib/interface';
 import React, {useCallback} from 'react';
 import {flushSync} from 'react-dom';
 import HeaderDropdown from '../HeaderDropdown';
-import {singInUsingPost} from "@/services/yubi/chartController";
+import {singInUsingPost} from "@/services/lingxibi/chartController";
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
