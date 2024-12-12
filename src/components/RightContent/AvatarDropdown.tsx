@@ -127,7 +127,8 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
           ...s,
           currentUser: {
             ...s.currentUser,
-            signIn: true
+            signIn: true,
+            score: s.currentUser?.score + 30
           }
         };
       });

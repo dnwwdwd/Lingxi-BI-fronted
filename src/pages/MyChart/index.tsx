@@ -1,14 +1,13 @@
 import {
   listMyChartByPageUsingPOST,
   regenChartUsingPOST,
-  searchMyChart,
 } from '@/services/lingxibi/chartController';
 import { useModel } from '@@/exports';
 import { Avatar, Button, Card, Form, Input, List, message, Modal, Result, Select } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import ReactECharts from 'echarts-for-react';
 import React, { useEffect, useState } from 'react';
-import Search from "antd/es/input/Search";
+import Search from 'antd/es/input/Search';
 
 const MyChartPage: React.FC = () => {
   const [form] = useForm();
@@ -184,6 +183,7 @@ const MyChartPage: React.FC = () => {
                 <Select.Option value="堆叠图">堆叠图</Select.Option>
                 <Select.Option value="饼图">饼图</Select.Option>
                 <Select.Option value="雷达图">雷达图</Select.Option>
+                <Select.Option value="玫瑰图">玫瑰图</Select.Option>
               </Select>
             </Form.Item>
             <Form.Item label="原始数据" name="chartData" initialValue={selectedItem.chartData}>
@@ -244,9 +244,17 @@ const MyChartPage: React.FC = () => {
                 {item.status === 'succeed' && (
                   <>
                     <div style={{ marginBottom: 16 }} />
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
                       <p style={{ margin: 0 }}>{'分析目标：' + item.goal}</p>
-                      <Button type="primary" onClick={() => handleOpenModal(item)}>修改诉求</Button>
+                      <Button type="primary" onClick={() => handleOpenModal(item)}>
+                        修改诉求
+                      </Button>
                     </div>
                     <div style={{ marginBottom: 16 }} />
                     <ReactECharts option={item.genChart && JSON.parse(item.genChart)} />

@@ -75,6 +75,12 @@ declare namespace API {
     message?: string;
   }
 
+  type BaseResponseListTeamVO = {
+    code?: number;
+    data?: TeamVO[];
+    message?: string;
+  }
+
   type BaseResponsePagePostVO_ = {
     code?: number;
     data?: PagePostVO_;
@@ -260,12 +266,14 @@ declare namespace API {
 
   type LoginUserVO = {
     createTime?: string;
+    userAccount?: string;
     id?: number;
     updateTime?: string;
     userAvatar?: string;
     userName?: string;
     userProfile?: string;
     userRole?: string;
+    score?: number;
   };
 
   type OrderItem = {

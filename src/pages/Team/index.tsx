@@ -1,6 +1,6 @@
-import { listTeamByPageUsingPOST } from '@/services/lingxibi/teamController';
+import {exitTeamUsingPOST, joinTeamUsingPOST, listTeamByPageUsingPOST} from '@/services/lingxibi/teamController';
 import { useModel } from '@@/exports';
-import { PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { LogoutOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   Avatar,
   Button,
@@ -13,7 +13,7 @@ import {
   InputNumber,
   List,
   message,
-  Space,
+  Space, Tooltip,
   Upload,
 } from 'antd';
 import Search from 'antd/es/input/Search';
@@ -91,6 +91,28 @@ const TeamPage: React.FC = () => {
     initData();
   }, [searchParams]);
 
+  const joinTeam = async (id: number) => {
+    try {
+      const res = await joinTeamUsingPOST({ id });
+      if (res.data) {
+        message.success('加入队伍成功');
+      }
+    } catch (e: any) {
+      message.error('加入队伍失败，' + e.message);
+    }
+  };
+
+  const exitTeam = async (id: number) => {
+    try {
+      const res = await exitTeamUsingPOST({ id });
+      if (res.data) {
+        message.success('退出队伍成功');
+      }
+    } catch (e: any) {
+      message.error('退出队伍失败，' + e.message);
+    }
+  };
+
   return (
     <div className="my-chart-page">
       <div>
@@ -109,7 +131,7 @@ const TeamPage: React.FC = () => {
 
       <div className="margin-16" />
       <FloatButton.Group shape="circle" style={{ insetInlineEnd: 24 }}>
-        <FloatButton icon={<PlusCircleOutlined onClick={() => setOpen(true)} />} />
+        <FloatButton icon={<Tooltip title="创建队伍"><PlusCircleOutlined onClick={() => setOpen(true)} /></Tooltip>} />
         <FloatButton.BackTop visibilityHeight={0} />
       </FloatButton.Group>
 
@@ -121,11 +143,7 @@ const TeamPage: React.FC = () => {
         extra={
           <Space>
             <Button onClick={onClose}>取消</Button>
-            <Button
-              type="primary"
-              onClick={onClose}
-              onClick={() => console.log(form.getFieldValue())}
-            >
+            <Button type="primary" onClick={() => console.log(form.getFieldValue())}>
               创建
             </Button>
           </Space>
@@ -182,41 +200,39 @@ const TeamPage: React.FC = () => {
       </Drawer>
 
       <List
-        loading={loading}
-        grid={{
-          gutter: 10,
-          xs: 1,
-          sm: 1,
-          md: 2,
-          lg: 3,
-          xl: 3,
-          xxl: 3,
-        }}
-        pagination={{
-          onChange: (page, pageSize) => {
-            setSearchParams({
-              ...searchParams,
-              current: page,
-              pageSize,
-            });
-          },
-          current: searchParams.current,
-          pageSize: searchParams.pageSize,
-          total: total,
-        }}
-        dataSource={teamVOList}
-        renderItem={(item) => (
-          <List.Item key={item.id}>
-            <Card style={{ width: '100%', height: 'auto' }}>
-              <List.Item.Meta
-                  avatar={<Avatar src={item.userVO && item.userVO.userAvatar} />}
-                  title={item.name}
-                  description={item.description}
-              />
-                <Image width={270} height={200} src={item.imgUrl} style={{ marginTop: '3px'}}/>
-            </Card>
-          </List.Item>
-        )}
+          bordered={true}
+          itemLayout="vertical"
+          size="large"
+          loading={loading}
+          pagination={{
+            onChange: (page, pageSize) => {
+              setSearchParams({
+                ...searchParams,
+                current: page,
+                pageSize,
+              });
+            },
+            current: searchParams.current,
+            pageSize: searchParams.pageSize,
+            total: total,
+          }}
+          dataSource={teamVOList}
+          renderItem={(item) => (
+              <List.Item
+                  key={item.id}
+                  actions={[
+                    <Tooltip title="加入队伍" key="pluscircle-icon"><PlusCircleOutlined onClick={() => joinTeam(item.id)} /></Tooltip>,
+                    <Tooltip title="退出队伍" key="logout-icon"><LogoutOutlined onClick={() => exitTeam(item.id)} /></Tooltip>,
+                  ]}
+                  extra={<img width={120} src={item.imgUrl} />}
+              >
+                <List.Item.Meta
+                    avatar={<Avatar src={item.userVO && item.userVO.userAvatar} />}
+                    title={item.name}
+                    description={item.description}
+                />
+              </List.Item>
+          )}
       >
       </List>
     </div>

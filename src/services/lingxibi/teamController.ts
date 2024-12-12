@@ -16,3 +16,46 @@ export async function listTeamByPageUsingPOST(
     ...(options || {}),
   });
 }
+
+export async function listTeamMyJoinedByPageUsingPOST(
+  body: API.TeamQueryRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponsePageTeamVO>('/api/team/page/my/joined', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+export async function joinTeamUsingPOST(
+  body: API.ChartUpdateRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseBoolean_>('/api/team/join', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+
+export async function exitTeamUsingPOST(
+  body: API.ChartUpdateRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseBoolean_>('/api/team/exit', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
