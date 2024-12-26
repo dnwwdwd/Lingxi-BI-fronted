@@ -22,7 +22,7 @@ const MyChartPage: React.FC = () => {
   const [searchParams, setSearchParams] = useState<API.ChartQueryRequest>({...initSearchParams});
   const {initialState} = useModel('@@initialState');
   const {currentUser} = initialState ?? {};
-  const [chartList, setChartList] = useState<API.Chart[]>();
+  const [chartList, setChartList] = useState<API.Chart[]>([]);
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -124,7 +124,6 @@ const MyChartPage: React.FC = () => {
   };
 
   useEffect(() => {
-    initData();
     const cleanup = initializeSSE();
     return cleanup; // 清理 SSE 连接
   }, []);
