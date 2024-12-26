@@ -1,19 +1,22 @@
-import {exitTeamUsingPOST, joinTeamUsingPOST, listTeamByPageUsingPOST} from '@/services/lingxibi/teamController';
+import {
+  exitTeamUsingPOST,
+  joinTeamUsingPOST,
+  listTeamByPageUsingPOST,
+} from '@/services/lingxibi/teamController';
 import { useModel } from '@@/exports';
 import { LogoutOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   Avatar,
   Button,
-  Card,
   Drawer,
   FloatButton,
   Form,
-  Image,
   Input,
   InputNumber,
   List,
   message,
-  Space, Tooltip,
+  Space,
+  Tooltip,
   Upload,
 } from 'antd';
 import Search from 'antd/es/input/Search';
@@ -131,7 +134,13 @@ const TeamPage: React.FC = () => {
 
       <div className="margin-16" />
       <FloatButton.Group shape="circle" style={{ insetInlineEnd: 24 }}>
-        <FloatButton icon={<Tooltip title="创建队伍"><PlusCircleOutlined onClick={() => setOpen(true)} /></Tooltip>} />
+        <FloatButton
+          icon={
+            <Tooltip title="创建队伍">
+              <PlusCircleOutlined onClick={() => setOpen(true)} />
+            </Tooltip>
+          }
+        />
         <FloatButton.BackTop visibilityHeight={0} />
       </FloatButton.Group>
 
@@ -200,41 +209,44 @@ const TeamPage: React.FC = () => {
       </Drawer>
 
       <List
-          bordered={true}
-          itemLayout="vertical"
-          size="large"
-          loading={loading}
-          pagination={{
-            onChange: (page, pageSize) => {
-              setSearchParams({
-                ...searchParams,
-                current: page,
-                pageSize,
-              });
-            },
-            current: searchParams.current,
-            pageSize: searchParams.pageSize,
-            total: total,
-          }}
-          dataSource={teamVOList}
-          renderItem={(item) => (
-              <List.Item
-                  key={item.id}
-                  actions={[
-                    <Tooltip title="加入队伍" key="pluscircle-icon"><PlusCircleOutlined onClick={() => joinTeam(item.id)} /></Tooltip>,
-                    <Tooltip title="退出队伍" key="logout-icon"><LogoutOutlined onClick={() => exitTeam(item.id)} /></Tooltip>,
-                  ]}
-                  extra={<img width={120} src={item.imgUrl} />}
-              >
-                <List.Item.Meta
-                    avatar={<Avatar src={item.userVO && item.userVO.userAvatar} />}
-                    title={item.name}
-                    description={item.description}
-                />
-              </List.Item>
-          )}
-      >
-      </List>
+        bordered={true}
+        itemLayout="vertical"
+        size="large"
+        loading={loading}
+        pagination={{
+          onChange: (page, pageSize) => {
+            setSearchParams({
+              ...searchParams,
+              current: page,
+              pageSize,
+            });
+          },
+          current: searchParams.current,
+          pageSize: searchParams.pageSize,
+          total: total,
+        }}
+        dataSource={teamVOList}
+        renderItem={(item) => (
+          <List.Item
+            key={item.id}
+            actions={[
+              <Tooltip title="加入队伍" key="join-team-icon">
+                <PlusCircleOutlined onClick={() => joinTeam(item.id)} />
+              </Tooltip>,
+              <Tooltip title="退出队伍" key="exit-team-icon">
+                <LogoutOutlined onClick={() => exitTeam(item.id)} />
+              </Tooltip>,
+            ]}
+            extra={<img width={120} src={item.imgUrl} />}
+          >
+            <List.Item.Meta
+              avatar={<Avatar src={item.userVO && item.userVO.userAvatar} />}
+              title={item.name}
+              description={item.description}
+            />
+          </List.Item>
+        )}
+      ></List>
     </div>
   );
 };
