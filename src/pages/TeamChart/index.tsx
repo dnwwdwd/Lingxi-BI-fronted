@@ -1,15 +1,17 @@
-import {
-  listMyChartByPageUsingPOST,
-  regenChartUsingPOST,
-} from '@/services/lingxibi/chartController';
-import { useModel } from '@@/exports';
-import { Avatar, Button, Card, Form, Input, List, message, Modal, Result, Select } from 'antd';
-import { useForm } from 'antd/es/form/Form';
+import {regenChartUsingPOST,} from '@/services/lingxibi/chartController';
+import {useModel} from '@@/exports';
+import {Avatar, Button, Card, Form, Input, List, message, Modal, Result, Select} from 'antd';
+import {useForm} from 'antd/es/form/Form';
 import ReactECharts from 'echarts-for-react';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Search from 'antd/es/input/Search';
+import {useParams} from "react-router";
+import {listTeamChartByPageUsingPOST} from "@/services/lingxibi/teamController";
 
-const MyChartPage: React.FC = () => {
+const TeamChartPage: React.FC = () => {
+
+  const {id} = useParams<{ id: string }>();
+
   const [form] = useForm();
   const initSearchParams = {
     current: 1,
@@ -19,9 +21,9 @@ const MyChartPage: React.FC = () => {
   };
 
   const [isSearch, setIsSearch] = useState(false);
-  const [searchParams, setSearchParams] = useState<API.ChartQueryRequest>({ ...initSearchParams });
-  const { initialState } = useModel('@@initialState');
-  const { currentUser } = initialState ?? {};
+  const [searchParams, setSearchParams] = useState<API.ChartQueryRequest>({...initSearchParams});
+  const {initialState} = useModel('@@initialState');
+  const {currentUser} = initialState ?? {};
   const [chartList, setChartList] = useState<API.Chart[]>();
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
@@ -33,7 +35,7 @@ const MyChartPage: React.FC = () => {
   const initData = async () => {
     setLoading(true);
     try {
-      const res = await listMyChartByPageUsingPOST(searchParams);
+      const res = await listTeamChartByPageUsingPOST({...searchParams, teamId: Number(id)});
       if (res.data) {
         setChartList(res.data.records ?? []);
         setTotal(res.data.total ?? 0);
@@ -60,7 +62,7 @@ const MyChartPage: React.FC = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const res = await listMyChartByPageUsingPOST(searchParams);
+      const res = await listTeamChartByPageUsingPOST({...searchParams, teamId: Number(id)});
       if (res.data) {
         setChartList(res.data.records ?? []);
         setTotal(res.data.total ?? 0);
@@ -140,7 +142,7 @@ const MyChartPage: React.FC = () => {
           }}
         />
       </div>
-      <div className="margin-16" />
+      <div className="margin-16"/>
 
       <Modal
         title="表单"
@@ -167,15 +169,15 @@ const MyChartPage: React.FC = () => {
               {/*                  <Input />*/}
             </Form.Item>
             <Form.Item label="图表名称" name="name" initialValue={selectedItem.name}>
-              <Input />
+              <Input/>
             </Form.Item>
             <Form.Item label="分析目标" name="goal" initialValue={selectedItem.goal}>
-              <Input />
+              <Input/>
             </Form.Item>
             <Form.Item label="原始数据" name="chartType" initialValue={selectedItem.chartType}>
               <Select
                 placeholder="请选择图表类型"
-                onChange={(value) => form.setFieldsValue({ chartType: value })}
+                onChange={(value) => form.setFieldsValue({chartType: value})}
               >
                 <Select.Option value="折线图">折线图</Select.Option>
                 <Select.Option value="柱状图">柱状图</Select.Option>
@@ -186,7 +188,7 @@ const MyChartPage: React.FC = () => {
               </Select>
             </Form.Item>
             <Form.Item label="原始数据" name="chartData" initialValue={selectedItem.chartData}>
-              <textarea rows={15} cols={50} />
+              <textarea rows={15} cols={50}/>
             </Form.Item>
           </Form>
         )}
@@ -218,9 +220,9 @@ const MyChartPage: React.FC = () => {
         dataSource={chartList}
         renderItem={(item) => (
           <List.Item key={item.id}>
-            <Card style={{ width: '100%' }}>
+            <Card style={{width: '100%'}}>
               <List.Item.Meta
-                avatar={<Avatar src={currentUser && currentUser.userAvatar} />}
+                avatar={<Avatar src={currentUser && currentUser.userAvatar}/>}
                 title={item.name}
                 description={item.chartType ? '图表类型：' + item.chartType : undefined}
               />
@@ -237,12 +239,12 @@ const MyChartPage: React.FC = () => {
                 )}
                 {item.status === 'running' && (
                   <>
-                    <Result status="info" title="图表生成中" />
+                    <Result status="info" title="图表生成中"/>
                   </>
                 )}
                 {item.status === 'succeed' && (
                   <>
-                    <div style={{ marginBottom: 16 }} />
+                    <div style={{marginBottom: 16}}/>
                     <div
                       style={{
                         display: 'flex',
@@ -250,24 +252,24 @@ const MyChartPage: React.FC = () => {
                         alignItems: 'center',
                       }}
                     >
-                      <p style={{ margin: 0 }}>{'分析目标：' + item.goal}</p>
+                      <p style={{margin: 0}}>{'分析目标：' + item.goal}</p>
                       <Button type="primary" onClick={() => handleOpenModal(item)}>
                         修改诉求
                       </Button>
                     </div>
-                    <div style={{ marginBottom: 16 }} />
-                    <ReactECharts option={item.genChart && JSON.parse(item.genChart)} />
+                    <div style={{marginBottom: 16}}/>
+                    <ReactECharts option={item.genChart && JSON.parse(item.genChart)}/>
                   </>
                 )}
                 {item.status === 'succeed' && (
                   <>
-                    <div style={{ marginBottom: 16 }} />
+                    <div style={{marginBottom: 16}}/>
                     <p>{'分析结果：' + item.genResult}</p>
                   </>
                 )}
                 {item.status === 'failed' && (
                   <>
-                    <Result status="error" title="图表生成失败" subTitle={item.execMessage} />
+                    <Result status="error" title="图表生成失败" subTitle={item.execMessage}/>
                   </>
                 )}
               </>
@@ -279,4 +281,4 @@ const MyChartPage: React.FC = () => {
   );
 };
 
-export default MyChartPage;
+export default TeamChartPage;

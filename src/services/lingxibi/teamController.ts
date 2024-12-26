@@ -59,3 +59,19 @@ export async function exitTeamUsingPOST(
     ...(options || {}),
   });
 }
+
+
+/** listTeamChartByPageUsingPOST POST /api/team/chart/page */
+export async function listTeamChartByPageUsingPOST(
+  body: API.ChartQueryRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponsePageChart_>('/api/team/chart/page', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}

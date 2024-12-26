@@ -1,27 +1,11 @@
-import {
-  exitTeamUsingPOST,
-  joinTeamUsingPOST,
-  listTeamByPageUsingPOST,
-} from '@/services/lingxibi/teamController';
-import { useModel } from '@@/exports';
-import { LogoutOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import {
-  Avatar,
-  Button,
-  Drawer,
-  FloatButton,
-  Form,
-  Input,
-  InputNumber,
-  List,
-  message,
-  Space,
-  Tooltip,
-  Upload,
-} from 'antd';
+import {listTeamByPageUsingPOST,} from '@/services/lingxibi/teamController';
+import {useModel} from '@@/exports';
+import {PlusCircleOutlined, PlusOutlined} from '@ant-design/icons';
+import {Button, Drawer, FloatButton, Form, Input, InputNumber, message, Space, Tooltip, Upload,} from 'antd';
 import Search from 'antd/es/input/Search';
 import TextArea from 'antd/es/input/TextArea';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
+import TeamList from "@/components/TeamList";
 
 const TeamPage: React.FC = () => {
   const [form] = Form.useForm();
@@ -94,27 +78,7 @@ const TeamPage: React.FC = () => {
     initData();
   }, [searchParams]);
 
-  const joinTeam = async (id: number) => {
-    try {
-      const res = await joinTeamUsingPOST({ id });
-      if (res.data) {
-        message.success('加入队伍成功');
-      }
-    } catch (e: any) {
-      message.error('加入队伍失败，' + e.message);
-    }
-  };
 
-  const exitTeam = async (id: number) => {
-    try {
-      const res = await exitTeamUsingPOST({ id });
-      if (res.data) {
-        message.success('退出队伍成功');
-      }
-    } catch (e: any) {
-      message.error('退出队伍失败，' + e.message);
-    }
-  };
 
   return (
     <div className="my-chart-page">
@@ -208,45 +172,13 @@ const TeamPage: React.FC = () => {
         </Form>
       </Drawer>
 
-      <List
-        bordered={true}
-        itemLayout="vertical"
-        size="large"
+      <TeamList
+        teamVOList={teamVOList}
         loading={loading}
-        pagination={{
-          onChange: (page, pageSize) => {
-            setSearchParams({
-              ...searchParams,
-              current: page,
-              pageSize,
-            });
-          },
-          current: searchParams.current,
-          pageSize: searchParams.pageSize,
-          total: total,
-        }}
-        dataSource={teamVOList}
-        renderItem={(item) => (
-          <List.Item
-            key={item.id}
-            actions={[
-              <Tooltip title="加入队伍" key="join-team-icon">
-                <PlusCircleOutlined onClick={() => joinTeam(item.id)} />
-              </Tooltip>,
-              <Tooltip title="退出队伍" key="exit-team-icon">
-                <LogoutOutlined onClick={() => exitTeam(item.id)} />
-              </Tooltip>,
-            ]}
-            extra={<img width={120} src={item.imgUrl} />}
-          >
-            <List.Item.Meta
-              avatar={<Avatar src={item.userVO && item.userVO.userAvatar} />}
-              title={item.name}
-              description={item.description}
-            />
-          </List.Item>
-        )}
-      ></List>
+        total={total}
+        searchParams={searchParams}
+        setSearchParams={setSearchParams}
+      />
     </div>
   );
 };

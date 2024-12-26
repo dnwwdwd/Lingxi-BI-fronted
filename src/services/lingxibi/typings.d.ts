@@ -24,7 +24,7 @@ declare namespace API {
     createTime: Date;
     updateTime: Date;
     isDelete: number;
-    userRole: number;
+    userRole: string;
   };
 
   type BaseResponseBiResponse_ = {
@@ -170,6 +170,7 @@ declare namespace API {
     sortField?: string;
     sortOrder?: string;
     userId?: number;
+    teamId?: number;
   };
 
   type ChartUpdateRequest = {
@@ -237,7 +238,7 @@ declare namespace API {
   }
 
   type TeamVO = {
-    id?: number;
+    id: number;
     name?: string;
     description?: string;
     imgUrl?: string;
@@ -247,6 +248,7 @@ declare namespace API {
     updateTime?: Date;
     isDelete?: number;
     userVO?: LoginUserVO;
+    inTeam?: boolean;
   }
 
   type getPostVOByIdUsingGETParams = {

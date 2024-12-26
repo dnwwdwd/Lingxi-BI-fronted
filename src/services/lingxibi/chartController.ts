@@ -1,6 +1,6 @@
 // @ts-ignore
 /* eslint-disable */
-import { request } from '@umijs/max';
+import {request} from '@umijs/max';
 
 /** addChart POST /api/chart/add */
 export async function addChartUsingPOST(
@@ -264,14 +264,4 @@ export async function regenChartUsingPOST(
   });
 }
 
-export async function singInUsingPost(
-  options?: { [key: string]: any },
-) {
-  return request<API.BaseResponseBoolean_>('/api/user/sign/in', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    ...(options || {}),
-  });
-}
+
