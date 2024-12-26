@@ -113,7 +113,6 @@ const TeamChartPage: React.FC = () => {
 
   const handleSubmit = async (values: any) => {
     setModalVisible(false);
-    console.log(values);
     try {
       const res = await regenChartUsingPOST(values);
       if (!res?.data) {
