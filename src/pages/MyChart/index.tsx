@@ -8,6 +8,7 @@ import {useForm} from 'antd/es/form/Form';
 import ReactECharts from 'echarts-for-react';
 import React, {useEffect, useState} from 'react';
 import Search from 'antd/es/input/Search';
+import {request} from "@/app";
 
 const MyChartPage: React.FC = () => {
   const [form] = useForm();
@@ -37,13 +38,13 @@ const MyChartPage: React.FC = () => {
       return;
     }
 
-    const eventSource = new EventSource(`http://localhost:8081/api/sse/connect?userId=${currentUser.id}`);
+    const eventSource = new EventSource(request.baseURL + `/sse/connect?userId=${currentUser.id}`);
 
     eventSource.addEventListener('chart-update', (event) => {
       const data = JSON.parse(event.data);
 
       if (data) {
-        message.success('接收到新的图表更新');
+        message.success('图表已更新');
         // 更新 chartList
         setChartList((prevList) => {
           const index = prevList.findIndex((item) => item.id === data.id);
@@ -68,6 +69,7 @@ const MyChartPage: React.FC = () => {
       eventSource.close(); // 清理连接
     };
   };
+
 
   // 页面加载时加载数据
   const initData = async () => {
