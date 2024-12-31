@@ -1,6 +1,6 @@
 import {genChartByAiUsingPOST} from '@/services/lingxibi/chartController';
 import {UploadOutlined} from '@ant-design/icons';
-import {Button, Card, Col, Divider, Form, Input, message, Row, Select, Space, Spin, Upload} from 'antd';
+import {Alert, Button, Card, Col, Divider, Form, Input, message, Row, Select, Space, Spin, Upload} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import React, {useState} from 'react';
 import ReactECharts from 'echarts-for-react';
@@ -54,6 +54,15 @@ const AddChart: React.FC = () => {
 
   return (
     <div className="add-chart">
+      <Alert
+        message={'请保证输入的分析目标贴合原始数据集，否则会导致生成失败。'}
+        type="info"
+        showIcon
+        style={{
+          margin: 12,
+          marginBottom: 3,
+        }}
+      />
       <Row gutter={24}>
         <Col span={12}>
           <Card title="智能分析">

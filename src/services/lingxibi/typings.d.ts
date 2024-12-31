@@ -27,6 +27,14 @@ declare namespace API {
     userRole: string;
   };
 
+  export type TeamChart = {
+    id?: number;
+    teamId?: number;
+    chartId?: number;
+    createTime?: Date;
+    updateTime?: Date;
+  };
+
   type BaseResponseBiResponse_ = {
     code?: number;
     data?: BiResponse;
@@ -75,6 +83,12 @@ declare namespace API {
     message?: string;
   }
 
+  type BaseResponsePageTeam = {
+    code?: number;
+    data?: PageTeam;
+    message?: string;
+  }
+
   type BaseResponseListTeamVO = {
     code?: number;
     data?: TeamVO[];
@@ -114,6 +128,12 @@ declare namespace API {
   type BaseResponseUser_ = {
     code?: number;
     data?: User;
+    message?: string;
+  };
+
+  type BaseResponseListUser_ = {
+    code?: number;
+    data?: User[];
     message?: string;
   };
 
@@ -171,6 +191,7 @@ declare namespace API {
     sortOrder?: string;
     userId?: number;
     teamId?: number;
+    searchParams?: string;
   };
 
   type ChartUpdateRequest = {
@@ -184,6 +205,7 @@ declare namespace API {
     isDelete?: number;
     name?: string;
     updateTime?: string;
+    teamId?: number;
   };
 
   type DeleteRequest = {
@@ -276,6 +298,7 @@ declare namespace API {
     userProfile?: string;
     userRole?: string;
     score?: number;
+    generatingCount?: number;
   };
 
   type OrderItem = {
@@ -304,6 +327,19 @@ declare namespace API {
     orders?: OrderItem[];
     pages?: number;
     records?: TeamVO[];
+    searchCount?: boolean;
+    size?: number;
+    total?: number;
+  }
+
+  type PageTeam = {
+    countId?: string;
+    current?: number;
+    maxLimit?: number;
+    optimizeCountSql?: boolean;
+    orders?: OrderItem[];
+    pages?: number;
+    records?: Team[];
     searchCount?: boolean;
     size?: number;
     total?: number;
@@ -401,6 +437,11 @@ declare namespace API {
     title?: string;
   };
 
+  type ChartAddToTeamRequest = {
+    chartId: number;
+    teamId: number;
+  };
+
   type PostVO = {
     content?: string;
     createTime?: string;
@@ -430,6 +471,8 @@ declare namespace API {
     userName?: string;
     userPassword?: string;
     userRole?: string;
+    score?: number;
+    generatingCount?: number;
   };
 
   type UserAddRequest = {
@@ -447,14 +490,13 @@ declare namespace API {
   type UserQueryRequest = {
     current?: number;
     id?: number;
-    mpOpenId?: string;
     pageSize?: number;
     sortField?: string;
     sortOrder?: string;
-    unionId?: string;
     userName?: string;
     userProfile?: string;
     userRole?: string;
+    searchParams?: string;
   };
 
   type UserRegisterRequest = {

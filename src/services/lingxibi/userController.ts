@@ -177,3 +177,45 @@ export async function singInUsingPost(
     ...(options || {}),
   });
 }
+
+
+/** pageUser POST /user/page */
+export async function pageUserUsingPOST(
+  body: API.UserQueryRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponsePageUser_>('/user/page', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** updateUserOrAddUserUsingPOST POST /user/page */
+export async function updateUserOrAddUserUsingPOST(
+  body: API.User,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponsePageUser_>('/user/update/or/add', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+
+/** getUserById GET /user/get */
+export async function listAllUsersUsingGET(
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseListUser_>('/user/list/all', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}

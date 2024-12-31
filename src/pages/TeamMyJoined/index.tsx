@@ -1,7 +1,7 @@
 import {
   exitTeamUsingPOST,
   joinTeamUsingPOST,
-  listTeamMyJoinedByPageUsingPOST,
+  pageTeamMyJoinedByPageUsingPOST,
 } from '@/services/lingxibi/teamController';
 import {useModel} from '@@/exports';
 import {LogoutOutlined, PlusCircleOutlined} from '@ant-design/icons';
@@ -30,7 +30,7 @@ const TeamPage: React.FC = () => {
   const initData = async () => {
     setLoading(true);
     try {
-      const res = await listTeamMyJoinedByPageUsingPOST(searchParams);
+      const res = await pageTeamMyJoinedByPageUsingPOST(searchParams);
       if (res.data) {
         setTeamVOList(res.data.records ?? []);
         setTotal(res.data.total ?? 0);

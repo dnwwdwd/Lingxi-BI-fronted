@@ -1,4 +1,4 @@
-import {regenChartUsingPOST,} from '@/services/lingxibi/chartController';
+import {regenChartFromTeamUsingPOST, regenChartUsingPOST,} from '@/services/lingxibi/chartController';
 import {useModel} from '@@/exports';
 import {Avatar, Button, Card, Form, Input, List, message, Modal, Result, Select} from 'antd';
 import {useForm} from 'antd/es/form/Form';
@@ -161,7 +161,7 @@ const TeamChartPage: React.FC = () => {
   const handleSubmit = async (values: any) => {
     setModalVisible(false);
     try {
-      const res = await regenChartUsingPOST(values);
+      const res = await regenChartFromTeamUsingPOST(values);
       if (!res?.data) {
         message.error('分析失败,' + `${res.message}`);
       } else {
@@ -191,7 +191,7 @@ const TeamChartPage: React.FC = () => {
       <div className="margin-16"/>
 
       <Modal
-        title="表单"
+        title="重新生成图表"
         visible={modalVisible}
         onCancel={handleCancelModal}
         footer={[
@@ -211,8 +211,8 @@ const TeamChartPage: React.FC = () => {
       >
         {selectedItem && (
           <Form form={form} onFinish={handleSubmit}>
-            <Form.Item label="" name="id" initialValue={selectedItem.id}>
-              {/*                  <Input />*/}
+            <Form.Item label="" name="id" initialValue={selectedItem.id} hidden>
+              <Input/>
             </Form.Item>
             <Form.Item label="图表名称" name="name" initialValue={selectedItem.name}>
               <Input/>

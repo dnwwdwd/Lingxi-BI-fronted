@@ -19,11 +19,12 @@
     name: '管理页',
     access: 'canAdmin',
     routes: [
-      {path: '/admin/user', name: '用户管理', component: './Admin'},
-      {path: '/admin/chart', name: '图表管理', component: './Admin'},
-      {path: '/admin/team', name: '队伍管理', component: './Admin'},
+      {path: '/admin/user', name: '用户管理', icon: 'UserOutlined', component: './Admin/UserManage'},
+      {path: '/admin/chart', name: '图表管理', icon: 'LineChartOutlined', component: './Admin/ChartManage'},
+      {path: '/admin/team', name: '队伍管理', icon: 'TeamOutlined', component: './Admin/TeamManage'},
     ],
   },
+  {path: '/user/center', name: '个人中心', component: './User/Center', hideInMenu: true},
   {path: '/', redirect: '/welcome'},
   {path: '*', layout: false, component: './404'},
 ];

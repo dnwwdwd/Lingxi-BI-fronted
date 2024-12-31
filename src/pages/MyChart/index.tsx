@@ -1,4 +1,5 @@
 import {
+  addChartToTeamUsingPOST,
   listMyChartByPageUsingPOST,
   regenChartUsingPOST,
 } from '@/services/lingxibi/chartController';
@@ -9,6 +10,7 @@ import ReactECharts from 'echarts-for-react';
 import React, {useEffect, useState} from 'react';
 import Search from 'antd/es/input/Search';
 import {request} from "@/app";
+import {listAllTeamMyJoinedByPageUsingGET} from "@/services/lingxibi/teamController";
 
 const MyChartPage: React.FC = () => {
   const [form] = useForm();
@@ -26,10 +28,53 @@ const MyChartPage: React.FC = () => {
   const [chartList, setChartList] = useState<API.Chart[]>([]);
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
-
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<API.Chart | null>(null);
+  const [teamModalVisible, setTeamModalVisible] = useState(false);
 
+  const [selectedChart, setSelectedChart] = useState<API.Chart>({
+    id: 0,
+    name: '',
+    goal: '',
+    chartType: '',
+    chartData: '',
+    genChart: '',
+    genResult: '',
+    status: '',
+    execMessage: '',
+  });
+  const [teamList, setTeamList] = useState<API.Team[]>([]);
+
+  const [teamId, setTeamId] = useState<number>();
+
+  const showTeamModal = async (chart: API.Chart) => {
+    setTeamModalVisible(true);
+    setSelectedChart(chart)
+    try {
+      const res = await listAllTeamMyJoinedByPageUsingGET();
+      if (res.data) {
+        setTeamList(res.data ?? []);
+      } else {
+        message.error('获取队伍列表失败,' + `${res.message}`);
+      }
+    } catch (e: any) {
+      message.error('获取队伍列表失败，' + e.message);
+    }
+  };
+
+  const addChartToTeam = async () => {
+    try {
+      const res = await addChartToTeamUsingPOST({chartId: selectedChart.id, teamId: teamId});
+      if (res.data) {
+        message.success('添加到队伍成功');
+      } else {
+        message.error('添加到队伍失败,' + `${res.message}`);
+      }
+    } catch (e: any) {
+      message.error('添加到队伍失败，' + e.message);
+    }
+    setTeamModalVisible(false)
+  };
 
   // 创建 SSE 连接
   const initializeSSE = () => {
@@ -189,7 +234,7 @@ const MyChartPage: React.FC = () => {
       <div className="margin-16"/>
 
       <Modal
-        title="表单"
+        title="重新生成图表"
         visible={modalVisible}
         onCancel={handleCancelModal}
         footer={[
@@ -209,8 +254,8 @@ const MyChartPage: React.FC = () => {
       >
         {selectedItem && (
           <Form form={form} onFinish={handleSubmit}>
-            <Form.Item label="" name="id" initialValue={selectedItem.id}>
-              {/*                  <Input />*/}
+            <Form.Item label="ID" name="id" initialValue={selectedItem.id} hidden>
+              <Input disabled/>
             </Form.Item>
             <Form.Item label="图表名称" name="name" initialValue={selectedItem.name}>
               <Input/>
@@ -236,6 +281,33 @@ const MyChartPage: React.FC = () => {
             </Form.Item>
           </Form>
         )}
+      </Modal>
+
+      <Modal
+        title="将图表纳入队伍"
+        open={teamModalVisible}
+        onOk={() => addChartToTeam()}
+        onCancel={() => setTeamModalVisible(false)}
+        okText="确认"
+        cancelText="取消"
+      >
+        <div style={{marginTop: 16}}>
+          图表名称：
+          <Input disabled value={selectedChart!.name} style={{width: 350}}/>
+        </div>
+        <div style={{marginTop: 10}}>
+          队伍 ID：
+          <Select
+            showSearch
+            style={{width: '200px'}}
+            placeholder="请选择队伍 ID"
+            options={teamList.map(team => ({
+              value: team.id,
+              label: team.name
+            }))}
+            onChange={(value) => setTeamId(value)}
+          />
+        </div>
       </Modal>
 
       <List
@@ -297,9 +369,13 @@ const MyChartPage: React.FC = () => {
                       }}
                     >
                       <p style={{margin: 0}}>{'分析目标：' + item.goal}</p>
-                      <Button type="primary" onClick={() => handleOpenModal(item)}>
-                        修改诉求
-                      </Button>
+                      <div>
+                        <Button style={{marginRight: "5px"}} type="primary" onClick={() => handleOpenModal(item)}>
+                          修改诉求
+                        </Button>
+                        <Button type="default" onClick={() => showTeamModal(item)}>纳入队伍</Button>
+                      </div>
+
                     </div>
                     <div style={{marginBottom: 16}}/>
                     <ReactECharts option={item.genChart && JSON.parse(item.genChart)}/>

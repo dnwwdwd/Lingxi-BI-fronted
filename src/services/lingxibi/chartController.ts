@@ -175,7 +175,7 @@ export async function listChartByPageUsingPOST(
   body: API.ChartQueryRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponsePageChart_>('/chart/list/page', {
+  return request<API.BaseResponsePageChart_>('/chart/page', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -236,7 +236,7 @@ export async function listMyChartByPageEsUsingPOST(
 
 /** updateChart POST /chart/update */
 export async function updateChartUsingPOST(
-  body: API.ChartUpdateRequest,
+  body: API.Chart,
   options?: { [key: string]: any },
 ) {
   return request<API.BaseResponseBoolean_>('/chart/update', {
@@ -264,4 +264,49 @@ export async function regenChartUsingPOST(
   });
 }
 
+/** regenChartByAdmin POST /chart/regen */
+export async function regenChartByAdminUsingPOST(
+  body: API.DeleteRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseBoolean_>('/chart/regen/by/admin', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+
+/** regenChartByAdmin POST /chart/regen */
+export async function regenChartFromTeamUsingPOST(
+  body: API.ChartUpdateRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseBoolean_>('/team/chart/regen', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** addChartToTeam POST /chart/add/team */
+export async function addChartToTeamUsingPOST(
+  body: API.ChartAddToTeamRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseBoolean_>('/chart/add/team', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
 

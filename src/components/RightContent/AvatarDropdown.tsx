@@ -1,6 +1,6 @@
-import {LogoutOutlined, SettingOutlined, UserOutlined} from '@ant-design/icons';
+import {LogoutOutlined, UserOutlined} from '@ant-design/icons';
 import {useEmotionCss} from '@ant-design/use-emotion-css';
-import {history, useModel} from '@umijs/max';
+import {history, useModel, useNavigate} from '@umijs/max';
 import {Button, message, Spin} from 'antd';
 import {stringify} from 'querystring';
 import type {MenuInfo} from 'rc-menu/lib/interface';
@@ -21,6 +21,9 @@ export const AvatarName = () => {
 };
 
 export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, children }) => {
+
+  const navigate = useNavigate();
+
   /**
    * 退出登录，并且将当前的 url 保存
    */
@@ -65,8 +68,9 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
         });
         loginOut();
         return;
+      } else if (key === 'center') {
+        navigate('/user/center');
       }
-      history.push(`/account/${key}`);
     },
     [setInitialState],
   );
@@ -94,23 +98,11 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
   }
 
   const menuItems = [
-    ...(menu
-      ? [
-          {
-            key: 'center',
-            icon: <UserOutlined />,
-            label: '个人中心',
-          },
-          {
-            key: 'settings',
-            icon: <SettingOutlined />,
-            label: '个人设置',
-          },
-          {
-            type: 'divider' as const,
-          },
-        ]
-      : []),
+    {
+      key: 'center',
+      icon: <UserOutlined />,
+      label: '个人设置',
+    },
     {
       key: 'logout',
       icon: <LogoutOutlined />,
@@ -118,24 +110,6 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
     }
   ];
 
-  const signIn = async () => {
-    const res = await singInUsingPost();
-    if (res?.data && res.code === 0) {
-      message.success('签到成功，+30积分');
-      setInitialState((s) => {
-        return {
-          ...s,
-          currentUser: {
-            ...s.currentUser,
-            signIn: true,
-            score: s.currentUser?.score + 30
-          }
-        };
-      });
-    } else {
-      message.info(res.message);
-    }
-  };
   return (
     <div >
       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -148,23 +122,6 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
         >
           {children}
         </HeaderDropdown>
-
-        <div style={{marginLeft: 2}}>
-          <span style={{ marginTop: 5}}>已有积分：{currentUser?.score}</span>
-        </div>
-
-        {currentUser && (
-          <>
-            {currentUser.signIn ? (
-              <Button onClick={() => signIn()}>
-                已签到
-              </Button>
-            ) : (
-              <Button type="primary" onClick={() => signIn()}>签到</Button>
-            )}
-          </>
-        )}
-
       </div>
     </div>
   );

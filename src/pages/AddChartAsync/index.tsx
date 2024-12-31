@@ -1,6 +1,6 @@
 import {genChartByAiAsyncUsingPOST} from '@/services/lingxibi/chartController';
 import {UploadOutlined} from '@ant-design/icons';
-import {Button, Card, Form, Input, message, Select, Space, Upload} from 'antd';
+import {Alert, Button, Card, Form, Input, message, Select, Space, Upload} from 'antd';
 import {useForm} from 'antd/es/form/Form';
 import TextArea from 'antd/es/input/TextArea';
 import React, {useState} from 'react';
@@ -44,6 +44,15 @@ const AddChartAsync: React.FC = () => {
 
   return (
     <div className="add-chart-async">
+      <Alert
+        message={'请保证输入的分析目标贴合原始数据集，否则会导致生成失败。'}
+        type="info"
+        showIcon
+        style={{
+          margin: 12,
+          marginBottom: 5,
+        }}
+      />
       <Card title="智能分析">
         <Form
           form={form}

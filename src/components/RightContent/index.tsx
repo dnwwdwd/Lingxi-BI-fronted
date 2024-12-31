@@ -1,7 +1,6 @@
-import { QuestionCircleOutlined } from '@ant-design/icons';
-import { SelectLang as UmiSelectLang } from '@umijs/max';
+import {QuestionCircleOutlined} from '@ant-design/icons';
+import {SelectLang as UmiSelectLang} from '@umijs/max';
 import '@umijs/max';
-import {AvatarDropdown} from "@/components/RightContent/AvatarDropdown";
 
 export type SiderTheme = 'light' | 'dark';
 
