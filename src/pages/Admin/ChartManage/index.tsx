@@ -133,6 +133,7 @@ const ChartManage: React.FC = () => {
     succeed: {text: '成功', color: 'green'},
     running: {text: '生成中', color: 'blue'},
     failed: {text: '失败', color: 'red'},
+    wait: {text: '待生成', color: 'yellow'},
   };
 
   const columns = [
@@ -305,7 +306,6 @@ const ChartManage: React.FC = () => {
         </Form>
       </Modal>
 
-      {/* 查看图表弹窗 */}
       <Modal
         title={'修改图表信息'}
         visible={isChartModalVisible}

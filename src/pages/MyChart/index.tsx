@@ -83,7 +83,7 @@ const MyChartPage: React.FC = () => {
       return;
     }
 
-    const eventSource = new EventSource(request.baseURL + `/sse/connect?userId=${currentUser.id}`);
+    const eventSource = new EventSource(request.baseURL + `/sse/user/connect?userId=${currentUser.id}`);
 
     eventSource.addEventListener('chart-update', (event) => {
       const data = JSON.parse(event.data);

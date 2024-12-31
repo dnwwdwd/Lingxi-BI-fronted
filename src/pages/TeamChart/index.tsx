@@ -1,4 +1,4 @@
-import {regenChartFromTeamUsingPOST, regenChartUsingPOST,} from '@/services/lingxibi/chartController';
+import {regenChartFromTeamUsingPOST,} from '@/services/lingxibi/chartController';
 import {useModel} from '@@/exports';
 import {Avatar, Button, Card, Form, Input, List, message, Modal, Result, Select} from 'antd';
 import {useForm} from 'antd/es/form/Form';
@@ -25,7 +25,7 @@ const TeamChartPage: React.FC = () => {
   const [searchParams, setSearchParams] = useState<API.ChartQueryRequest>({...initSearchParams});
   const {initialState} = useModel('@@initialState');
   const {currentUser} = initialState ?? {};
-  const [chartList, setChartList] = useState<API.Chart[]>();
+  const [chartList, setChartList] = useState<API.Chart[]>([]);
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -39,9 +39,9 @@ const TeamChartPage: React.FC = () => {
       return;
     }
 
-    const eventSource = new EventSource(request.baseURL + `/sse/connect?userId=${currentUser.id}`);
+    const eventSource = new EventSource(request.baseURL + `/sse/team/connect?teamId=${id}`);
 
-    eventSource.addEventListener('chart-update', (event) => {
+    eventSource.addEventListener('team-chart-update', (event) => {
       const data = JSON.parse(event.data);
 
       if (data) {
@@ -161,7 +161,7 @@ const TeamChartPage: React.FC = () => {
   const handleSubmit = async (values: any) => {
     setModalVisible(false);
     try {
-      const res = await regenChartFromTeamUsingPOST(values);
+      const res = await regenChartFromTeamUsingPOST({...values, teamId: Number(id)});
       if (!res?.data) {
         message.error('分析失败,' + `${res.message}`);
       } else {
@@ -315,6 +315,19 @@ const TeamChartPage: React.FC = () => {
                 )}
                 {item.status === 'failed' && (
                   <>
+                    <div style={{marginBottom: 16}}/>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <p style={{margin: 0}}>{'分析目标：' + item.goal}</p>
+                      <Button type="primary" onClick={() => handleOpenModal(item)}>
+                        修改诉求
+                      </Button>
+                    </div>
                     <Result status="error" title="图表生成失败" subTitle={item.execMessage}/>
                   </>
                 )}
