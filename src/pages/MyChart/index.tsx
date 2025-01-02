@@ -51,11 +51,11 @@ const MyChartPage: React.FC = () => {
     setTeamModalVisible(true);
     setSelectedChart(chart)
     try {
-      const res = await listAllTeamMyJoinedByPageUsingGET();
+      const res : any = await listAllTeamMyJoinedByPageUsingGET();
       if (res.data) {
         setTeamList(res.data ?? []);
       } else {
-        message.error('获取队伍列表失败,' + `${res.message}`);
+        message.info('暂无任何队伍');
       }
     } catch (e: any) {
       message.error('获取队伍列表失败，' + e.message);

@@ -6,6 +6,7 @@ import {
   updateChartUsingPOST
 } from "@/services/lingxibi/chartController";
 import ReactECharts from "echarts-for-react";
+import MdEditor from "@/components/MdEditor";
 
 const initSearchParams = {
   current: 1,
@@ -26,6 +27,13 @@ const ChartManage: React.FC = () => {
   const chartRef = useRef<ReactECharts | null>(null);
 
   const [form] = Form.useForm();
+
+  const [value, setValue] = useState<string>('');
+
+  // 处理编辑器内容变化
+  const handleEditorChange = (newValue: string) => {
+    setValue(newValue);
+  };
 
   const handleShowChart = (chart: API.Chart) => {
     setIsChartModalVisible(true);
@@ -298,7 +306,7 @@ const ChartManage: React.FC = () => {
             <Input.TextArea rows={4}/>
           </Form.Item>
           <Form.Item label="生成的图表配置" name="genChart">
-            <Input.TextArea rows={4}/>
+            <MdEditor value={value} onChange={handleEditorChange}/>
           </Form.Item>
           <Form.Item label="执行消息" name="execMessage">
             <Input.TextArea rows={2}/>

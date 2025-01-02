@@ -127,6 +127,16 @@ const UserCenter: React.FC = () => {
                   style={{ cursor: "pointer", color: "#1890ff" }}
                 />
               </Text>
+
+              {/* 签到按钮 */}
+              <Button
+                type="primary"
+                style={{ marginTop: 16 }}
+                onClick={signIn}
+                disabled={currentUser.signIn} // 如果已经签到，按钮禁用
+              >
+                {currentUser.signIn ? "已签到" : "签到"}
+              </Button>
             </div>
           </Card>
         </Col>

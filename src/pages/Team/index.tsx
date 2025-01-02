@@ -61,8 +61,8 @@ const TeamPage: React.FC = () => {
   const initData = async () => {
     setLoading(true);
     try {
-      const res = await listTeamByPageUsingPOST(searchParams);
-      if (res.data) {
+      const res : any = await listTeamByPageUsingPOST(searchParams);
+      if (res.code === 0) {
         setTeamVOList(res.data.records ?? []);
         setTotal(res.data.total ?? 0);
       } else {
