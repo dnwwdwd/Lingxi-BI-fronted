@@ -83,6 +83,12 @@ declare namespace API {
     message?: string;
   }
 
+  type BaseResponseTeam = {
+    code?: number;
+    data?: Team;
+    message?: string;
+  }
+
   type BaseResponsePageTeam = {
     code?: number;
     data?: PageTeam;
@@ -235,6 +241,13 @@ declare namespace API {
     id?: number;
   };
 
+  type TeamAddRequest = {
+    name?: string;
+    imgs?: string[];
+    description?: string;
+    maxNum?: number;
+  }
+
   type TeamQueryRequest = {
     searchParam?: string;
     description?: string;
@@ -287,6 +300,10 @@ declare namespace API {
     /** id */
     id?: number;
   };
+
+  type getTeamByIdUsingGETParams = {
+    id?: number;
+  }
 
   type LoginUserVO = {
     createTime?: string;

@@ -31,11 +31,11 @@ const TeamPage: React.FC = () => {
     setLoading(true);
     try {
       const res : any = await pageTeamMyJoinedByPageUsingPOST(searchParams);
-      if (res.code === 0) {
+      if (res.data) {
         setTeamVOList(res.data.records ?? []);
         setTotal(res.data.total ?? 0);
       } else {
-        message.error('获取队伍失败,' + `${res.message}`);
+        message.info('暂无任何队伍');
       }
     } catch (e: any) {
       message.error('获取队伍失败，' + e.message);

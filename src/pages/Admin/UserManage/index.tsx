@@ -28,8 +28,6 @@ const UserManage: React.FC = () => {
       if (res.data) {
         setUserList(res.data.records ?? []);
         setTotal(res.data.total ?? 0);
-      } else {
-        message.error('获取用户列表失败，' + res.message);
       }
     } catch (e: any) {
       message.error('获取用户列表失败，' + e.message);
@@ -38,11 +36,9 @@ const UserManage: React.FC = () => {
   };
 
 
-
   useEffect(() => {
     loadData();
   }, [searchParams]);
-
 
 
   // 新增用户弹窗

@@ -1,19 +1,45 @@
+import {
+  Avatar,
+  Button,
+  Card,
+  Empty,
+  Form,
+  Input,
+  InputNumber,
+  List,
+  message,
+  Modal,
+  Result,
+  Select,
+  Typography, Upload
+} from 'antd';
+
 import {regenChartFromTeamUsingPOST,} from '@/services/lingxibi/chartController';
 import {useModel} from '@@/exports';
-import {Avatar, Button, Card, Form, Input, List, message, Modal, Result, Select} from 'antd';
 import {useForm} from 'antd/es/form/Form';
 import ReactECharts from 'echarts-for-react';
 import React, {useEffect, useState} from 'react';
 import Search from 'antd/es/input/Search';
 import {useParams} from "react-router";
-import {listTeamChartByPageUsingPOST} from "@/services/lingxibi/teamController";
+import {
+  getTeamByIdUsingGET,
+  listTeamChartByPageUsingPOST,
+  updateTeamUsingPOST
+} from "@/services/lingxibi/teamController";
 import {request} from "@/app";
+import {EditOutlined, PlusOutlined} from "@ant-design/icons";
+import TextArea from "antd/es/input/TextArea";
+import {UploadFile} from "antd/lib";
 
 const TeamChartPage: React.FC = () => {
 
   const {id} = useParams<{ id: string }>();
 
+  console.log(id);
+
   const [form] = useForm();
+  const [teamForm] = useForm();
+
   const initSearchParams = {
     current: 1,
     pageSize: 4,
@@ -26,11 +52,14 @@ const TeamChartPage: React.FC = () => {
   const {initialState} = useModel('@@initialState');
   const {currentUser} = initialState ?? {};
   const [chartList, setChartList] = useState<API.Chart[]>([]);
+  const [team, setTeam] = useState<API.Team>();
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
-
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<API.Chart | null>(null);
+  const [open, setOpen] = useState(false);
+  const [imgUrl, setImgUrl] = useState<string>('');
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   // 创建 SSE 连接
   const initializeSSE = () => {
@@ -75,7 +104,52 @@ const TeamChartPage: React.FC = () => {
   const initData = async () => {
     setLoading(true);
     try {
-      const res = await listTeamChartByPageUsingPOST({...searchParams, teamId: Number(id)});
+      const res = await listTeamChartByPageUsingPOST({...searchParams, teamId: id});
+      if (res.data) {
+        setChartList(res.data.records ?? []);
+        setTotal(res.data.total ?? 0);
+        // 隐藏图表的 title
+        if (res.data.records) {
+          res.data.records.forEach((data) => {
+            if (data.status === 'succeed') {
+              const chartOption = JSON.parse(data.genChart ?? '{}');
+              // chartOption.title = undefined;
+              data.genChart = JSON.stringify(chartOption);
+            }
+          });
+        }
+      } else {
+        message.info('暂无任何图表');
+      }
+    } catch (e: any) {
+      message.error('获取我的图表失败，' + e.message);
+    }
+    try {
+      const res = await getTeamByIdUsingGET({id: id});
+      teamForm.setFieldsValue(res.data);
+      setTeam(res.data);
+      if (res.data && res.data.imgUrl) {
+        // 将 imgUrl 转换为 UploadFile 对象
+        const file = {
+          uid: '-1',
+          name: 'image',
+          status: 'done',
+          url: res.data.imgUrl,
+        };
+        setFileList([file]);
+        teamForm.setFieldsValue({ imgUrl: res.data.imgUrl });
+      }
+    } catch (e: any) {
+      message.error('获取队伍信息失败，' + e.message);
+    }
+    setLoading(false);
+  };
+
+  // 搜索框加载数据
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const res = await listTeamChartByPageUsingPOST({...searchParams, teamId: id});
       if (res.data) {
         setChartList(res.data.records ?? []);
         setTotal(res.data.total ?? 0);
@@ -98,31 +172,17 @@ const TeamChartPage: React.FC = () => {
     setLoading(false);
   };
 
-  // 搜索框加载数据
-  const loadData = async () => {
-    setLoading(true);
+  const handleOk = async () => {
     try {
-      const res = await listTeamChartByPageUsingPOST({...searchParams, teamId: Number(id)});
+      const res = await updateTeamUsingPOST(team!);
       if (res.data) {
-        setChartList(res.data.records ?? []);
-        setTotal(res.data.total ?? 0);
-        // 隐藏图表的 title
-        if (res.data.records) {
-          res.data.records.forEach((data) => {
-            if (data.status === 'succeed') {
-              const chartOption = JSON.parse(data.genChart ?? '{}');
-              // chartOption.title = undefined;
-              data.genChart = JSON.stringify(chartOption);
-            }
-          });
-        }
-      } else {
-        message.error('获取我的图表失败,' + `${res.message}`);
+        message.success('更新成功');
+        onClose();
+        window.location.reload();
       }
     } catch (e: any) {
-      message.error('获取我的图表失败，' + e.message);
+      message.error('更新失败，' + e.message);
     }
-    setLoading(false);
   };
 
 
@@ -140,6 +200,15 @@ const TeamChartPage: React.FC = () => {
       initData();
     }
   }, [searchParams]);
+
+
+  const onClose = () => {
+    setOpen(false);
+  }
+
+  const onOpen = () => {
+    setOpen(true);
+  };
 
   const handleOpenModal = (item: API.Chart) => {
     setSelectedItem(item);
@@ -161,7 +230,7 @@ const TeamChartPage: React.FC = () => {
   const handleSubmit = async (values: any) => {
     setModalVisible(false);
     try {
-      const res = await regenChartFromTeamUsingPOST({...values, teamId: Number(id)});
+      const res = await regenChartFromTeamUsingPOST({...values, teamId: id});
       if (!res?.data) {
         message.error('分析失败,' + `${res.message}`);
       } else {
@@ -171,6 +240,27 @@ const TeamChartPage: React.FC = () => {
       message.error('分析失败，' + e.message);
     }
   };
+
+  const onUploadChange = (info: any) => {
+    const { file, fileList: newFileList } = info;
+    if (file.status === 'done') {
+      const response = file.response;
+      if (response && response.data) {
+        const uploadedUrl = response.data;
+        setImgUrl(uploadedUrl);
+        setFileList(newFileList);
+        teamForm.setFieldsValue({ imgUrl: uploadedUrl });
+        message.success('图片上传成功');
+      } else {
+        message.error('图片上传失败，请检查接口返回值');
+      }
+    } else if (file.status === 'error') {
+      message.error('图片上传失败，请稍后重试');
+    } else {
+      setFileList(newFileList);
+    }
+  };
+
 
   return (
     <div className="my-chart-page">
@@ -188,7 +278,72 @@ const TeamChartPage: React.FC = () => {
           }}
         />
       </div>
+
+      <div style={{marginTop: '10px', display: 'flex', justifyContent: 'space-between'}}>
+        <Typography.Title
+          level={3}
+        >
+          {team?.name}
+        </Typography.Title>
+
+        <EditOutlined style={{marginRight: '5'}} onClick={onOpen}/>
+      </div>
+
       <div className="margin-16"/>
+
+      <Modal
+        open={open}
+        title="队伍介绍"
+        onOk={handleOk}
+        onCancel={onClose}>
+        <Form
+          labelCol={{span: 4}}
+          wrapperCol={{span: 14}}
+          layout="horizontal"
+          style={{maxWidth: 600}}
+          form={teamForm}
+        >
+          <Form.Item
+            label="队伍名称"
+            name="name"
+            rules={[{required: true, message: '请输入队伍名称'}]}
+          >
+            <Input disabled={currentUser.id !== team?.userId}/>
+          </Form.Item>
+          <Form.Item
+            label="最大人数"
+            name="maxNum"
+            rules={[{required: true, message: '请输入最大人数'}]}
+          >
+            <InputNumber disabled={currentUser.id !== team?.userId}/>
+          </Form.Item>
+          <Form.Item
+            label="队伍描述"
+            name="description"
+            rules={[{required: true, message: '请输入队伍描述'}]}
+          >
+            <TextArea rows={4} disabled={currentUser.id !== team?.userId}/>
+          </Form.Item>
+          <Form.Item
+            label="队伍图片"
+            name="imgUrl"
+            rules={[{required: true, message: '请上传队伍图片'}]}
+          >
+            <Upload
+              action={`${request.baseURL}/image/upload`}
+              listType="picture-card"
+              maxCount={1}
+              onChange={onUploadChange}
+              fileList={fileList}
+              disabled={currentUser.id !== team?.userId}>
+              <button style={{border: 0, background: 'none'}} type="button">
+                <PlusOutlined/>
+                <div style={{marginTop: 8}}>上传图片</div>
+              </button>
+            </Upload>
+          </Form.Item>
+        </Form>
+      </Modal>
 
       <Modal
         title="重新生成图表"
@@ -241,6 +396,13 @@ const TeamChartPage: React.FC = () => {
       </Modal>
 
       <List
+        locale={{
+          emptyText: (
+            <Empty
+              description="该队伍暂无任何图表"
+            />
+          ),
+        }}
         grid={{
           gutter: 16,
           xs: 1,

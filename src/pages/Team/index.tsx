@@ -1,4 +1,4 @@
-import {listTeamByPageUsingPOST,} from '@/services/lingxibi/teamController';
+import {addTeamUsingPOST, listTeamByPageUsingPOST,} from '@/services/lingxibi/teamController';
 import {useModel} from '@@/exports';
 import {PlusCircleOutlined, PlusOutlined} from '@ant-design/icons';
 import {Button, Drawer, FloatButton, Form, Input, InputNumber, message, Space, Tooltip, Upload,} from 'antd';
@@ -6,6 +6,7 @@ import Search from 'antd/es/input/Search';
 import TextArea from 'antd/es/input/TextArea';
 import React, {useEffect, useState} from 'react';
 import TeamList from "@/components/TeamList";
+import {request} from "@/app";
 
 const TeamPage: React.FC = () => {
   const [form] = Form.useForm();
@@ -24,20 +25,24 @@ const TeamPage: React.FC = () => {
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [open, setOpen] = useState(false);
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<API.Chart | null>(null);
+  const [imgUrl, setImgUrl] = useState<string>('');
 
   const onClose = () => {
     setOpen(false);
   };
 
-  const normFile = (e: any) => {
-    if (Array.isArray(e)) {
-      return e;
+  const addTeam = async () => {
+    const formData = form.getFieldsValue();
+    try {
+      const res = await addTeamUsingPOST({ ...formData, imgUrl });
+      if (res.data) {
+        onClose();
+        message.success('队伍创建成功');
+        initData();
+      }
+    } catch (e: any) {
+      message.error('队伍创建失败，' + e.message);
     }
-    console.log(e?.fileList);
-    return e?.fileList;
   };
 
   const onUploadChange = (info: any) => {
@@ -45,9 +50,9 @@ const TeamPage: React.FC = () => {
     if (info.file.status === 'done') {
       // 假设返回数据格式为 { url: '图片链接' }
       const response = info.file.response;
-      if (response && response.url) {
+      if (response && response.data) {
         // 更新表单中的图片链接
-        form.setFieldsValue({ imgs: [{ url: response.url }] });
+        setImgUrl(response.data);
         message.success('图片上传成功');
       } else {
         message.error('图片上传失败，请检查接口返回值');
@@ -116,7 +121,7 @@ const TeamPage: React.FC = () => {
         extra={
           <Space>
             <Button onClick={onClose}>取消</Button>
-            <Button type="primary" onClick={() => console.log(form.getFieldValue())}>
+            <Button type="primary" onClick={() => addTeam()}>
               创建
             </Button>
           </Space>
@@ -152,13 +157,10 @@ const TeamPage: React.FC = () => {
           </Form.Item>
           <Form.Item
             label="队伍图片"
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
-            name="imgs"
             rules={[{ required: true, message: '请上传队伍图片' }]}
           >
             <Upload
-              action="/upload.do"
+              action={`${request.baseURL}/image/upload`}
               listType="picture-card"
               maxCount={1}
               onChange={onUploadChange}

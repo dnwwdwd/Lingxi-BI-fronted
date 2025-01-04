@@ -25,9 +25,7 @@ const ChartManage: React.FC = () => {
   const [searchParams, setSearchParams] = useState<API.ChartQueryRequest>({...initSearchParams});
   const [total, setTotal] = useState<number>(0);
   const chartRef = useRef<ReactECharts | null>(null);
-
   const [form] = Form.useForm();
-
   const [value, setValue] = useState<string>('');
 
   // 处理编辑器内容变化

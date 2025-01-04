@@ -45,8 +45,6 @@ const TeamManage: React.FC = () => {
       if (res.data) {
         setTeamList(res.data.records ?? []);
         setTotal(res.data.total ?? 0);
-      } else {
-        message.info('暂无任何队伍');
       }
     } catch (e: any) {
       message.error('获取队伍列表失败' + e.message);

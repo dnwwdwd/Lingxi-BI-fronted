@@ -373,7 +373,7 @@ const MyChartPage: React.FC = () => {
                         <Button style={{marginRight: "5px"}} type="primary" onClick={() => handleOpenModal(item)}>
                           修改诉求
                         </Button>
-                        <Button type="default" onClick={() => showTeamModal(item)}>纳入队伍</Button>
+                        <Button style={{ backgroundColor: '#FD8553', color: 'white'}} onClick={() => showTeamModal(item)}>纳入队伍</Button>
                       </div>
 
                     </div>

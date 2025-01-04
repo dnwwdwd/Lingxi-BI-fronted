@@ -12,27 +12,8 @@ interface TeamListProps {
   setSearchParams: (params: { current: number; pageSize: number }) => void; // 设置分页参数
 }
 
-const joinTeam = async (id: number) => {
-  try {
-    const res = await joinTeamUsingPOST({id});
-    if (res.data) {
-      message.success('加入队伍成功');
-    }
-  } catch (e: any) {
-    message.error('加入队伍失败，' + e.message);
-  }
-};
 
-const exitTeam = async (id: number) => {
-  try {
-    const res = await exitTeamUsingPOST({id});
-    if (res.data) {
-      message.success('退出队伍成功');
-    }
-  } catch (e: any) {
-    message.error('退出队伍失败，' + e.message);
-  }
-};
+
 
 const TeamList: React.FC<TeamListProps> = ({
                                              teamVOList, loading = false, total = 0,
@@ -40,6 +21,30 @@ const TeamList: React.FC<TeamListProps> = ({
                                            }) => {
 
   const navigate = useNavigate();
+
+
+  const joinTeam = async (id: number) => {
+    try {
+      const res = await joinTeamUsingPOST({id});
+      if (res.data) {
+        message.success('加入队伍成功');
+      }
+    } catch (e: any) {
+      message.error('加入队伍失败，' + e.message);
+    }
+  };
+
+  const exitTeam = async (id: number) => {
+    try {
+      const res = await exitTeamUsingPOST({id});
+      if (res.data) {
+        message.success('退出队伍成功');
+        navigate(-1);
+      }
+    } catch (e: any) {
+      message.error('退出队伍失败，' + e.message);
+    }
+  };
 
   return (
     <List

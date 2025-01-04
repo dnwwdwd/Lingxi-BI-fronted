@@ -43,6 +43,33 @@ export async function listAllTeamMyJoinedByPageUsingGET(
   });
 }
 
+/** getPostVOById GET /team/my/joined */
+export async function getTeamByIdUsingGET(
+  params: API.getTeamByIdUsingGETParams,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseTeam>('/team/get', {
+    method: 'GET',
+    params: {...params},
+    ...(options || {}),
+  });
+}
+
+
+export async function addTeamUsingPOST(
+  body: API.TeamAddRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseBoolean_>('/team/add', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 
 
 export async function joinTeamUsingPOST(
