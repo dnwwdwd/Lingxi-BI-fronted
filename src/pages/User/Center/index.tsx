@@ -112,10 +112,10 @@ const UserCenter: React.FC = () => {
               </div>
 
               {/* 社交按钮 */}
-              <Space size="middle" style={{ marginTop: 16 }}>
-                <GithubOutlined style={{ fontSize: 20, color: "#000" }} />
-                <CodeOutlined style={{ fontSize: 20, color: "#000" }} />
-              </Space>
+              {/*<Space size="middle" style={{ marginTop: 16 }}>*/}
+              {/*  <GithubOutlined style={{ fontSize: 20, color: "#000" }} />*/}
+              {/*  <CodeOutlined style={{ fontSize: 20, color: "#000" }} />*/}
+              {/*</Space>*/}
 
               {/* 用户 ID */}
               <Text style={{ display: "block", marginTop: 8 }}>

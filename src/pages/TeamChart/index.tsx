@@ -174,11 +174,13 @@ const TeamChartPage: React.FC = () => {
 
   const handleOk = async () => {
     try {
-      const res = await updateTeamUsingPOST(team!);
-      if (res.data) {
+      const res : any = await updateTeamUsingPOST(team!);
+      if (res.code === 0) {
         message.success('更新成功');
         onClose();
         window.location.reload();
+      } else {
+      message.error('更新失败，' + `${res.message}`);
       }
     } catch (e: any) {
       message.error('更新失败，' + e.message);
@@ -235,6 +237,7 @@ const TeamChartPage: React.FC = () => {
         message.error('分析失败,' + `${res.message}`);
       } else {
         message.success('正在重新生成，稍后请在我的图表页面刷新查看');
+        window.location.reload();
       }
     } catch (e: any) {
       message.error('分析失败，' + e.message);

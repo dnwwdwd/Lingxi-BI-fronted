@@ -209,6 +209,7 @@ const MyChartPage: React.FC = () => {
         message.error('分析失败,' + `${res.message}`);
       } else {
         message.success('正在重新生成，稍后请在我的图表页面刷新查看');
+        window.location.reload();
       }
     } catch (e: any) {
       message.error('分析失败，' + e.message);
