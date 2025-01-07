@@ -70,6 +70,7 @@ const ChartManage: React.FC = () => {
     form.setFieldsValue(chart);
   };
 
+
   // 删除图表
   const handleDelete = (chartId: number | undefined) => {
     if (!chartId) return;
@@ -113,7 +114,10 @@ const ChartManage: React.FC = () => {
     setIsModalVisible(false);
   };
 
-  const regenChart = () => {
+  const regenChart = (chart: API.Chart | null) => {
+    if (chart) {
+      setSelectedChart(chart);
+    }
     Modal.confirm({
       title: '重新生成图表',
       content: '确定要重新生成该图表吗？',
@@ -122,6 +126,7 @@ const ChartManage: React.FC = () => {
           const res = await regenChartByAdminUsingPOST({id: selectedChart?.id});
           if (res.data) {
             message.success('操作成功');
+            window.location.reload();
           } else {
             message.error('操作失败，' + res.message);
           }
@@ -162,6 +167,11 @@ const ChartManage: React.FC = () => {
       title: '类型',
       dataIndex: 'chartType',
       key: 'chartType',
+    },
+    {
+      title: '用户ID',
+      dataIndex: 'userId',
+      key: 'userId',
     },
     {
       title: '状态',
@@ -210,17 +220,24 @@ const ChartManage: React.FC = () => {
       title: '操作',
       key: 'action',
       render: (_: any, record: API.Chart) => (
-        <Space>
-          <Button type="link" onClick={() => handleEdit(record)}>
-            修改
-          </Button>
-          <Button type="link" danger onClick={() => handleDelete(record.id)}>
-            删除
-          </Button>
-          <Button type="link" onClick={() => handleShowChart(record)}>
-            显示图表
-          </Button>
-        </Space>
+        <>
+          <Space>
+            <Button type="link" onClick={() => handleEdit(record)}>
+              修改
+            </Button>
+            <Button type="link" onClick={() => regenChart(record)}>
+              重新生成
+            </Button>
+          </Space>
+          <Space>
+            <Button type="link" danger onClick={() => handleDelete(record.id)}>
+              删除
+            </Button>
+            <Button type="link" onClick={() => handleShowChart(record)}>
+              显示图表
+            </Button>
+          </Space>
+        </>
       ),
     },
   ];
@@ -316,7 +333,7 @@ const ChartManage: React.FC = () => {
         title={'修改图表信息'}
         visible={isChartModalVisible}
         onCancel={() => setIsChartModalVisible(false)}
-        onOk={(value) => regenChart()}
+        onOk={(value) => regenChart(null)}
         okText="重新生成"
         cancelText="取消">
         <ReactECharts ref={chartRef}

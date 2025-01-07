@@ -61,14 +61,14 @@ const UserCenter: React.FC = () => {
   const signIn = async () => {
     const res = await singInUsingPost();
     if (res?.data && res.code === 0) {
-      message.success("签到成功，+30积分");
+      message.success("签到成功，+20积分");
       setInitialState((s) => {
         return {
           ...s,
           currentUser: {
             ...s.currentUser,
             signIn: true,
-            score: s.currentUser?.score + 30,
+            score: s.currentUser?.score + 20,
           },
         };
       });
