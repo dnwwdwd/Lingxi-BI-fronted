@@ -149,6 +149,12 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseMessage_ = {
+    code?: number;
+    data?: MessageVO[];
+    message?: string;
+  };
+
   type BiResponse = {
     chartId?: number;
     genChart?: string;
@@ -167,6 +173,7 @@ declare namespace API {
     isDelete?: number;
     name?: string;
     status?: string;
+    allowModify?: number;
     updateTime?: string;
     userId?: number;
   };
@@ -457,6 +464,7 @@ declare namespace API {
   type ChartAddToTeamRequest = {
     chartId: number;
     teamId: number;
+    allowModify: number;
   };
 
   type PostVO = {
@@ -544,4 +552,16 @@ declare namespace API {
     userProfile?: string;
     userRole?: string;
   };
+
+   type MessageVO = {
+    id: number;
+    content: string;
+    chartHistoryId: number;
+    fromId: number;
+    toId: number;
+    isRead: number; // 0 - 未读，1 - 已读
+    fromUser?: UserVO;
+    chartHistory?: Chart;
+  };
+
 }

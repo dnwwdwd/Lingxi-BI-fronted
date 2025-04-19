@@ -4,7 +4,7 @@ import {
   regenChartUsingPOST,
 } from '@/services/lingxibi/chartController';
 import {useModel} from '@@/exports';
-import {Avatar, Button, Card, Form, Input, List, message, Modal, Result, Select} from 'antd';
+import {Avatar, Button, Card, Form, Input, List, message, Modal, Radio, Result, Select} from 'antd';
 import {useForm} from 'antd/es/form/Form';
 import ReactECharts from 'echarts-for-react';
 import React, {useEffect, useState} from 'react';
@@ -46,12 +46,13 @@ const MyChartPage: React.FC = () => {
   const [teamList, setTeamList] = useState<API.Team[]>([]);
 
   const [teamId, setTeamId] = useState<number>();
+  const [allowModify, setAllowUpdate] = useState<number>();
 
   const showTeamModal = async (chart: API.Chart) => {
     setTeamModalVisible(true);
     setSelectedChart(chart)
     try {
-      const res : any = await listAllTeamMyJoinedByPageUsingGET();
+      const res: any = await listAllTeamMyJoinedByPageUsingGET();
       if (res.data) {
         setTeamList(res.data ?? []);
       } else {
@@ -64,7 +65,7 @@ const MyChartPage: React.FC = () => {
 
   const addChartToTeam = async () => {
     try {
-      const res = await addChartToTeamUsingPOST({chartId: selectedChart.id, teamId: teamId});
+      const res = await addChartToTeamUsingPOST({chartId: selectedChart.id, teamId: teamId, allowModify: allowModify});
       if (res.data) {
         message.success('添加到队伍成功');
       } else {
@@ -309,6 +310,19 @@ const MyChartPage: React.FC = () => {
             onChange={(value) => setTeamId(value)}
           />
         </div>
+        <div style={{marginTop: 10}}>
+          是否允许队员修改图表：
+          <Select
+            showSearch
+            style={{width: '200px'}}
+            placeholder="请选择是否允许"
+            options={[
+              {value: '1', label: '允许'},
+              {value: '0', label: '不允许'}
+            ]}
+            onChange={(value) => setAllowUpdate(value)}
+          />
+        </div>
       </Modal>
 
       <List
@@ -374,12 +388,14 @@ const MyChartPage: React.FC = () => {
                         <Button style={{marginRight: "5px"}} type="primary" onClick={() => handleOpenModal(item)}>
                           修改诉求
                         </Button>
-                        <Button style={{ backgroundColor: '#FD8553', color: 'white'}} onClick={() => showTeamModal(item)}>纳入队伍</Button>
+                        <Button style={{backgroundColor: '#FD8553', color: 'white'}}
+                                onClick={() => showTeamModal(item)}>纳入队伍</Button>
                       </div>
 
                     </div>
                     <div style={{marginBottom: 16}}/>
                     <ReactECharts option={item.genChart && JSON.parse(item.genChart)}/>
+                    <p> {'数据结论：' + item.genResult}</p>
                   </>
                 )}
                 {item.status === 'failed' && (

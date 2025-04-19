@@ -464,9 +464,11 @@ const TeamChartPage: React.FC = () => {
                       }}
                     >
                       <p style={{margin: 0}}>{'分析目标：' + item.goal}</p>
-                      <Button type="primary" onClick={() => handleOpenModal(item)}>
-                        修改诉求
-                      </Button>
+                      {(item.allowModify == 1 || item.userId == currentUser.id) && (
+                        <Button type="primary" onClick={() => handleOpenModal(item)}>
+                          修改诉求
+                        </Button>
+                      )}
                     </div>
                     <div style={{marginBottom: 16}}/>
                     <ReactECharts option={item.genChart && JSON.parse(item.genChart)}/>

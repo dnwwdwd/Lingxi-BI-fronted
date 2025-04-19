@@ -13,6 +13,7 @@
   {path: '/team_my_joined', name: '已加队伍', icon: 'TeamOutlined', component: './TeamMyJoined'},
   {path: '/my_chart', name: '我的图表', icon: 'pieChart', component: './MyChart'},
   {path: '/team/:id/chart', hideInMenu: true, name: '队伍图表', icon: 'pieChart', component: './TeamChart'},
+  {path: '/message', name: '我的消息', icon: 'message', component: './Message'},
   {
     path: '/admin',
     icon: 'crown',

@@ -1,6 +1,6 @@
 import Footer from '@/components/Footer';
 import {Question} from '@/components/RightContent';
-import {getLoginUserUsingGET} from '@/services/yubi/userController';
+import {getLoginUserUsingGET} from '@/services/lingxibi/userController';
 import {SettingDrawer} from '@ant-design/pro-components';
 import type {RunTimeLayoutConfig} from '@umijs/max';
 import {history} from '@umijs/max';
@@ -115,7 +115,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request = {
-  baseURL: isDev ? 'http://localhost:8081' : 'http://backendlingxibi.hejiajun.icu',
+  baseURL: isDev ? 'http://localhost:8081/api' : 'http://backendbi.hejiajun.icu/api',
   withCredentials: true,
   ...errorConfig,
 };

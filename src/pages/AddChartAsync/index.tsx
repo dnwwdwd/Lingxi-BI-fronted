@@ -85,6 +85,14 @@ const AddChartAsync: React.FC = () => {
               ]}
             />
           </Form.Item>
+
+          <Form.Item name="type" label="数据来源">
+            <Select options={[
+              {value: '1', label: '教育行业'},
+              {value: '2', label: '汽车行业'},
+            ]}/>
+          </Form.Item>
+
           <Form.Item name="file" label="原始数据">
             <Upload name="file" maxCount={1}>
               <Button icon={<UploadOutlined />}>上传 CSV 文件</Button>
