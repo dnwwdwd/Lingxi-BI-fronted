@@ -329,16 +329,20 @@ const ChartManage: React.FC = () => {
         </Form>
       </Modal>
 
-      <Modal
-        title={'修改图表信息'}
-        visible={isChartModalVisible}
-        onCancel={() => setIsChartModalVisible(false)}
-        onOk={(value) => regenChart(null)}
-        okText="重新生成"
-        cancelText="取消">
-        <ReactECharts ref={chartRef}
-                      option={selectedChart && selectedChart.genChart && JSON.parse(selectedChart.genChart)}/>
-      </Modal>
+      {isChartModalVisible && (
+        <Modal
+          title="修改图表信息"
+          visible={isChartModalVisible}
+          onCancel={() => setIsChartModalVisible(false)}
+          onOk={() => regenChart(null)}
+          footer={null}
+        >
+          <ReactECharts
+            ref={chartRef}
+            option={selectedChart?.genChart && JSON.parse(selectedChart.genChart)}
+          />
+        </Modal>
+      )}
     </div>
   );
 };
